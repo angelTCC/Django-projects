@@ -6,47 +6,97 @@
         <title>Backend projects</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
+        <style>
+            input[type="text"], input[type="date"], textarea {
+                width: 150px; /* Adjust width */
+                height: 30px; /* Adjust height */
+                padding: 5px; /* Adjust padding */
+                margin: 5px; /* Adjust margin */
+            }
+    
+            /* For textarea */
+            textarea {
+                width: 300px;
+                height: 30px;
+            }
+        </style>
     </head>
     <body>
         <div class="container">
             <h1>Books</h1>
-            <form>
-                <label for="title">Title:</label>
-                <input type="text" id="title" name="title"><br>
-                <label for="author">Author:</label>
-                <input type="text" id="author" name="author"><br>
-                <label for="date">Date:</label>
-                <input type="datetime" id="date" name="date"><br>
-                <label for="description">Description:</label>
-                <input type="description" id="description" name="description"><br>
-            </form>
+
+            <!-- Table for Listing and Deleting Books -->
             <table class="table">
                 <thead>
                     <tr>
+                        <th>Id</th>
                         <th>Title</th>
                         <th>Author</th>
                         <th>Date</th>
                         <th>Description</th>
-                        <th>Action</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
+                    <tr>
+                        <!-- Form to Create or Edit a Book -->
+                        <form method="post" action="{% url 'create' %}" class="form-inline">
+                            {% csrf_token %}
+                            <td><input type="text" name="id" id="id" hidden></td>
+                            <td><input type="text" name="title" id="title" required></td>
+                            <td><input type="text" name="author" id="author" required></td>
+                            <td><input type="date" name="date" id="date" required></td>
+                            <td><textarea name="description" id="description" required></textarea></td>
+                            <td>
+                                <button type="submit" class="btn btn-success">Save</button>
+                            </td>
+                        </form>
+                    </tr>
+
+
                     {% for book in books %}
                     <tr>
-                        <td>{{ book.title }}</td>
-                        <td>{{ book.author }}</td>
-                        <td>{{ book.published_date }}</td>
-                        <td>{{ book.description }}</td>
-                        <td>
-                            <button type="button" class="btn btn-primary" name="edit">Edit</button>
-                            <button type="button" class="btn btn-primary" name="delete">Delete</button>
-                        </td>
+
+                        {% if edit_book and  book.id == edit_book.id  %}
+                            <!-- Render the edit form for this book -->
+                            <form method="post" action="{% url 'edit' book.id %}">
+                                {% csrf_token %}
+                                <td>{{ book.id }}</td>
+                                <td><input type="text" name="title" id="title" value="{{ book.title }}" class="form-control" required></td>
+                                <td><input type="text" name="author" id="author" value="{{ book.author }}" class="form-control" required></td>
+                                <td><input type="date" name="published_date" value="{{ book.published_date|date:'Y-m-d' }}" class="form-control" required></td>
+                                <td><textarea name="description" class="form-control" required>{{ book.description }}</textarea></td>
+                                <td>
+                                    <button type="submit" class="btn btn-success">Save</button>
+                                    <a href="{% url 'list' %}" class="btn btn-danger">Cancel</a>
+                                </td>
+                            </form>
+                        {% else %}
+                            <td>{{ book.id }}</td>
+                            <td>{{ book.title }}</td>
+                            <td>{{ book.author }}</td>
+                            <td>{{ book.published_date }}</td>
+                            <td>{{ book.description|truncatewords:10 }}</td>
+                            <td>
+                                <!-- Edit Button -->
+                                <form method="post" action="{% url 'edit' book.id%}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary">Edit</button>
+                                </form>
+                                <!-- Delete Button -->
+                                <form method="post" action="{% url 'delete' book.id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this book?')">Delete</button>
+                                </form>
+                            </td>
+                        {% endif %}
                     </tr>
-                    {% endfor%}    
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
-
+    
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     </body>
+    
 </html>
