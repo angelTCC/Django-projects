@@ -8,7 +8,22 @@ from rest_framework.response import Response
 def loginview(request):
     return render(request, 'login.html', {})
 
+def registerview(request):
+    return render(request, 'register.html', {})
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def profile_view(request):
+    user = request.user
+    return Response({
+        "message": "Welcome to your profile!",
+        "username": user.username,
+        "email": user.email,
+    })
+
 @api_view()
 @permission_classes([IsAuthenticated])
 def secret(request):
     return Response({'message':'some secret message'})
+
+
