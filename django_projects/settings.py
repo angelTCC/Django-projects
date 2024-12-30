@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'ProfileManager',
     'djoser',
+    'blog',
 ]
 
 # Django REST Framework settings
