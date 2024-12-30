@@ -27,17 +27,5 @@ This project creates a simple page where users can create, edit, and delete book
 
 
 ## User Authentication System
-Create a backend system for user registration and login with session or token-based authentication. 
-This project focuses on securely managing user credentials and sessions. Users should be able to register, 
-log in, and access protected resources based on their authentication status. Implementing this system involves 
-handling password encryption, user sessions or tokens, and secure login procedures.
+This project is a simple user authentication system built with Django, integrating Djoser for user registration and token-based login, along with JavaScript for frontend interaction. Key features include user account creation via `/auth/users/`, token retrieval for authentication via `/auth/token/login/`, and a protected profile view at `/profileManager/profile/` that displays user information for authenticated users. The JavaScript implementation covers key concepts such as asynchronous programming using `async/await`, handling HTTP requests with the `fetch` API, managing state with `localStorage` for storing authentication tokens, and working with form events using the `onsubmit` handler for dynamic interaction between the frontend and backend. This project demonstrates the basics of Django REST Framework (DRF), Djoser, and frontend-backend integration.
 
-- create the apis(acreate user and curd operations) and test using insomnia
-- make the views to login and male crud operation with json format, use genericview or apivews
-- review the meta course about apis
-
-```
-pip install djangorestframework-authtoken
-```
-
-You first need to install rest framework token authentication, authtoken or simplejwt. Update Django settings, migrate the database, 

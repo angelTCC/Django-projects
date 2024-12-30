@@ -18,9 +18,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'registerview' %}">Register</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="logoutUser()">Log out</a>
-                    </li>
                 </ul>
             </div>
         </nav>
@@ -39,32 +36,67 @@
         </div>
 
         <script>
+            // Function to handle login
             async function loginUser(event) {
                 event.preventDefault();
+
                 const username = document.getElementById('loginUsername').value;
                 const password = document.getElementById('loginPassword').value;
                 const csrfToken = document.getElementById('csrfToken').value;
 
+                // Send login request to get the auth token
                 const response = await fetch('/auth/token/login/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRFToken': csrfToken, // Include CSRF token
+                        'X-CSRFToken': csrfToken, // CSRF token for security
                     },
                     body: JSON.stringify({ username, password }),
                 });
 
                 if (response.ok) {
                     const data = await response.json();
-                    localStorage.setItem('auth_token', data.auth_token); // Save token
+                    console.log("Login response:", data);
+                    localStorage.setItem('auth_token', data.auth_token); // Save token in localStorage
                     alert('Login successful!');
-                    window.location.href = '/profileManager/profile/';
+
+                    // Redirect to profile page after login
+                    fetchProfile(); // Call fetchProfile to test the token and load the profile data
                 } else {
                     alert('Invalid credentials!');
                 }
             }
 
+            // Function to fetch profile
+            async function fetchProfile() {
+                const token = localStorage.getItem('auth_token');
+
+                if (!token) {
+                    alert("User is not logged in!");
+                    return;
+                }
+
+                const response = await fetch('/profileManager/profile/', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Token ${token}`, // Include the token in the Authorization header
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log("Profile data:", data);
+                    alert(`Welcome, ${data.username}!`);
+                } else {
+                    const errorData = await response.json();
+                    console.error("Error fetching profile:", errorData);
+                    alert("Failed to fetch profile. Please login again.");
+                }
+            }
+
         </script>
+        
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeo9BsAkxHrkn6eKr6xPQu8FxENBozKfQmZHw4B0P2v1Kyyj" crossorigin="anonymous"></script>
     </body>

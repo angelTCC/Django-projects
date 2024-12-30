@@ -21,9 +21,3 @@ def profile_view(request):
         "email": user.email,
     })
 
-@api_view()
-@permission_classes([IsAuthenticated])
-def secret(request):
-    return Response({'message':'some secret message'})
-
-

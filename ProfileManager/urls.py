@@ -6,7 +6,6 @@ urlpatterns = [
     path('login/', views.loginview, name='loginview'),
     path('register/', views.registerview, name='registerview'),
     path('profile/', views.profile_view, name='profile'),
-    path('secret/', views.secret), # access if you have token
     path('api-token-auth/', obtain_auth_token), # create and get token if you have one acount
 ]
 
